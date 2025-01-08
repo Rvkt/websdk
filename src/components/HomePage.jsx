@@ -1,24 +1,26 @@
 import React, { useEffect, useState } from "react";
-import { useLocation } from "react-router-dom";
+import {  useLocation } from "react-router-dom";
+// import { InitiateUpiTxnResponse } from "./initiateUpiTxn";
+// import PaymentService from "./PaymentService";
+
 
 const HomePage = () => {
+    // const navigate = useNavigate(); // Correct placement of useNavigate hook
     const location = useLocation();
-    const [paymentStatus] = useState(null);
+    const [paymentStatus, setPaymentStatus] = useState(null);
+
     const [paymentData, setPaymentData] = useState(null);
+    // Access the data returned from the PaymentPage
 
     useEffect(() => {
         // Check if the state is available and set paymentData
         if (location.state?.paymentData) {
             setPaymentData(location.state.paymentData);
+            setPaymentStatus(paymentData.message);
         }
-    }, [location.state]);
+    }, [location.state, paymentData.message]);
 
-    // Log paymentData whenever it changes
-    useEffect(() => {
-        if (paymentData) {
-            console.log(paymentData);
-        }
-    }, [paymentData]);
+
 
     return (
         <div style={{ textAlign: "center", marginTop: "50px" }}>

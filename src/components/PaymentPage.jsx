@@ -31,6 +31,22 @@ const PaymentPage = () => {
             "i2ZxKJIljb0+XGmWttdP3F2U832t7HM9tVnAl+LDL5DlGne13/f5HRtPL3DhqAY6uheG0GFX4tuTIwyiI6CexZL4Dm20PqZa6G+9kRlcqCK8Bct+ZBxoCWmZ/tw41q3QwUiIee3lCSZyqX7hvt5dRiZ+EH9Aeq7L0Eysepxgko2Hi4NWJy6yDw5LqzkfW5hPhc/MO1QpreFH/99qh/vjnXzgy4pH32Bs9mo1PfosJ3eX0ceSyOb+dZUCIgpfVzznXN8GLWw0WAmFwA874GyF5Fo0JMwRsnStezgcbIxV+QT9QmzN0zz1n0zzTilA7mMhZp2hqtxGDYqSdhI6M/1NqQ==",
             paymentData.orderId
           );
+
+
+          const paymentData = {
+            status: result.data.status,
+            orderId: result.data.orderId,
+            identifire: result.data.identifire,
+            amount: result.data.amount,
+            rrn: result.data.rrn,
+            responseCode: result.data.responseCode,
+            payeeVpa: result.data.payeeVpa,
+            date: result.data.date,
+            time: result.data.time,
+            remark: result.data.remark
+          };
+
+
           setCheckTxnData(result.data);  // Update state with the transaction result
         }
       } catch (error) {
@@ -60,7 +76,7 @@ const PaymentPage = () => {
   // Use a separate useEffect to navigate after setting state
   useEffect(() => {
     if (timeLeft === 0) {
-      navigate("/home", { state: { checkTxnData } });
+      // navigate("/home", { state: { checkTxnData } });
     }
   }, [timeLeft, checkTxnData, navigate]);  // Trigger navigation once state is updated and timeLeft reaches 0
 
@@ -72,7 +88,7 @@ const PaymentPage = () => {
 
   const handlePaymentSuccess = () => {
     const paymentData = { status: "Success", transactionId: "12345" };
-    navigate("/", { state: { paymentData } });
+    navigate("/home", { state: { paymentData } });
   };
 
   const handlePaymentFailure = () => {
