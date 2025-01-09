@@ -5,7 +5,7 @@ import PaymentService from "./PaymentService";
 
 const PaymentPage = () => {
   const navigate = useNavigate();
-  const [timeLeft, setTimeLeft] = useState(20);
+  const [timeLeft, setTimeLeft] = useState(270);
   const [localPaymentData, setLocalPaymentData] = useState(null);
 
   const location = useLocation();
@@ -67,7 +67,7 @@ const PaymentPage = () => {
     // Call fetchPaymentStatus every 10 seconds
     const statusInterval = setInterval(() => {
       fetchPaymentStatus();
-    }, 10000);
+    }, 5000);
 
     return () => {
       clearInterval(timer);
@@ -78,7 +78,7 @@ const PaymentPage = () => {
 
   useEffect(() => {
     if (timeLeft === 0) {
-      navigate("/home", { state: { localPaymentData } });
+      navigate("/home", { state: { localPaymentData }, replace: true });
     }
     // eslint-disable-next-line
   }, [timeLeft, paymentData, navigate]);
@@ -87,16 +87,6 @@ const PaymentPage = () => {
     const minutes = Math.floor(seconds / 60);
     const secs = seconds % 60;
     return `${minutes}:${secs < 10 ? `0${secs}` : secs}`;
-  };
-
-  const handlePaymentSuccess = () => {
-    const paymentData = { status: "Success", transactionId: "12345" };
-    navigate("/home", { state: { paymentData } });
-  };
-
-  const handlePaymentFailure = () => {
-    const paymentData = { status: "Failed", transactionId: null };
-    navigate("/", { state: { paymentData } });
   };
 
   return (
@@ -134,26 +124,9 @@ const PaymentPage = () => {
             Scan the QR Code and pay <strong> ₹ {paymentData.amount}</strong> using apps enabled with UPI QR.
           </p>
           <p style={{ color: "#d32f2f", fontSize: "16px", marginBottom: "5px" }}>
-            Approve payment within <b>{formatTime(timeLeft)}</b>
-          </p>
-          <p style={{ fontSize: "14px", color: "#555" }}>
-            Can't pay with UPI? <a href="#other-options">Choose other payment options</a>
+            Complete the payment within <b>{formatTime(timeLeft)}</b>
           </p>
         </div>
-      </div>
-      <div>
-        <button
-          onClick={handlePaymentSuccess}
-          style={{ padding: "10px 20px", fontSize: "16px", marginRight: "10px" }}
-        >
-          Simulate Success
-        </button>
-        <button
-          onClick={handlePaymentFailure}
-          style={{ padding: "10px 20px", fontSize: "16px" }}
-        >
-          Simulate Failure
-        </button>
       </div>
     </>
   );

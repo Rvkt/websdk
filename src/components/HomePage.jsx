@@ -7,6 +7,9 @@ const HomePage = () => {
     const [localPaymentData, setLocalPaymentData] = useState(null);
     const [showDialog, setShowDialog] = useState(false); // State for dialog visibility
 
+    const headerColor = localPaymentData?.status === "Success" ? "green" : localPaymentData?.status === "Failed" ? "red" : "#007BFF";
+
+
     useEffect(() => {
         // Check if the state is available and set paymentData
         if (location.state?.localPaymentData) {
@@ -14,75 +17,98 @@ const HomePage = () => {
             setLocalPaymentData(location.state.localPaymentData);
             setShowDialog(true); // Show dialog when data is received
         }
-                // eslint-disable-next-line
+        // eslint-disable-next-line
 
     }, [location.state]);
 
-    const closeDialog = () => {
-        setShowDialog(false); // Close dialog
-    };
-
     return (
         <div style={{ textAlign: "center", marginTop: "50px" }}>
-            <h1>Welcome to the Homepage</h1>
+            {/* Card with Table to show payment details */}
             {localPaymentData && (
-                <p style={{ color: "green" }}>Payment Status: {localPaymentData.status}</p>
-            )}
-            {paymentStatus && (
-                <p style={{ color: paymentStatus.startsWith("Success") ? "green" : "red" }}>
-                    {paymentStatus}
-                </p>
-            )}
-
-            {/* Dialog Box */}
-            {showDialog && (
                 <div
                     style={{
-                        position: "fixed",
-                        top: 0,
-                        left: 0,
-                        right: 0,
-                        bottom: 0,
-                        backgroundColor: "rgba(0, 0, 0, 0.5)",
-                        display: "flex",
-                        justifyContent: "center",
-                        alignItems: "center",
-                        zIndex: 1000,
+                        margin: "20px auto",
+                        padding: "20px",
+                        borderRadius: "8px",
+                        boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
+                        width: "80%",
+                        maxWidth: "600px",
+                        backgroundColor: "#fff",
                     }}
                 >
+                    {/* Card Header */}
                     <div
                         style={{
-                            backgroundColor: "#fff",
-                            padding: "20px",
-                            borderRadius: "8px",
-                            width: "80%",
-                            maxWidth: "400px",
+                            backgroundColor: headerColor,
+                            color: "#fff",
+                            padding: "10px 20px",
+                            borderRadius: "8px 8px 0 0",
                             textAlign: "center",
                         }}
                     >
                         <h2>Payment Details</h2>
-                        <p><strong>Status:</strong> {localPaymentData.status}</p>
-                        <p><strong>Order ID:</strong> {localPaymentData.orderId}</p>
-                        <p><strong>Amount:</strong> ₹{localPaymentData.amount}</p>
-                        <p><strong>Payee VPA:</strong> {localPaymentData.payeeVpa}</p>
-                        <p><strong>Date:</strong> {localPaymentData.date}</p>
-                        <p><strong>Time:</strong> {localPaymentData.time}</p>
-                        <p><strong>Remark:</strong> {localPaymentData.remark}</p>
-                        <button
-                            onClick={closeDialog}
-                            style={{
-                                padding: "10px 20px",
-                                marginTop: "20px",
-                                backgroundColor: "#007BFF",
-                                color: "#fff",
-                                border: "none",
-                                borderRadius: "4px",
-                                cursor: "pointer",
-                            }}
-                        >
-                            Close
-                        </button>
                     </div>
+
+                    {/* Table to show payment details */}
+                    <table
+                        style={{
+                            marginTop: "0px",
+                            borderCollapse: "collapse",
+                            width: "100%",
+                            borderRadius: "0px 0px 8px 8px",
+                        }}
+                    >
+                        <tbody>
+                            <tr>
+                                <td style={{ border: "1px solid #ddd", padding: "8px", textAlign: "left", }}>
+                                    <strong>Status:</strong>
+                                </td>
+                                <td style={{ border: "1px solid #ddd", padding: "8px", textAlign: "right", }}>
+                                    {localPaymentData.status}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style={{ border: "1px solid #ddd", padding: "8px", textAlign: "left", }}>
+                                    <strong>Order ID:</strong>
+                                </td>
+                                <td style={{ border: "1px solid #ddd", padding: "8px", textAlign: "right", }}>
+                                    {localPaymentData.orderId}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style={{ border: "1px solid #ddd", padding: "8px", textAlign: "left", }}>
+                                    <strong>Amount:</strong>
+                                </td>
+                                <td style={{ border: "1px solid #ddd", padding: "8px", textAlign: "right", }}>
+                                    ₹ {localPaymentData.amount}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style={{ border: "1px solid #ddd", padding: "8px", textAlign: "left", }}>
+                                    <strong>Date:</strong>
+                                </td>
+                                <td style={{ border: "1px solid #ddd", padding: "8px", textAlign: "right", }}>
+                                    {localPaymentData.date}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style={{ border: "1px solid #ddd", padding: "8px", textAlign: "left", }}>
+                                    <strong>Time:</strong>
+                                </td>
+                                <td style={{ border: "1px solid #ddd", padding: "8px", textAlign: "right", }}>
+                                    {localPaymentData.time}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style={{ border: "1px solid #ddd", padding: "8px", textAlign: "left", }}>
+                                    <strong>Remark:</strong>
+                                </td>
+                                <td style={{ border: "1px solid #ddd", padding: "8px", textAlign: "right", }}>
+                                    {localPaymentData.remark}
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </div>
             )}
         </div>
