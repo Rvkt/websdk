@@ -82,6 +82,7 @@ const MainApp = ({ token, amount, remark, identifier, orderId, onSuccess, onFail
   // If payment is successful, render the payment page
   useEffect(() => {
     if (paymentSuccess && paymentData) {
+      console.log(paymentData.orderId)
       navigate('/payment', { state: { paymentData } });
     }
   }, [paymentSuccess, paymentData, navigate]);

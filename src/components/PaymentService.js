@@ -53,6 +53,7 @@ class PaymentService {
   }
 
   async checkTxnStatus(token, orderId) {
+    console.warn("Check TXN Status")
     const requestBody = {
       "orderId": orderId,
     };

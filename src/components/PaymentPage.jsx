@@ -5,25 +5,30 @@ import PaymentService from "./PaymentService";
 
 const PaymentPage = () => {
   const navigate = useNavigate();
-  const location = useLocation();
   const [timeLeft, setTimeLeft] = useState(20);
-  const { paymentData } = location.state || {};  // Fallback if state or result is undefined
-  const [checkTxnData, setCheckTxnData] = useState(null);
+  const [localPaymentData, setLocalPaymentData] = useState(null);
+
+  const location = useLocation();
+  const paymentData = location.state?.paymentData;
 
   useEffect(() => {
+
+    console.log(paymentData)
+
     const timer = setInterval(() => {
       setTimeLeft((prevTime) => {
         if (prevTime > 1) {
           return prevTime - 1;
         } else {
-          // If timeLeft reaches 0, navigate to the home page
           clearInterval(timer);
           return 0;
         }
       });
+      // eslint-disable-next-line
     }, 1000);
 
     const fetchPaymentStatus = async () => {
+      console.log(paymentData.orderId);
       try {
         const paymentService = new PaymentService();
         if (paymentData?.orderId) {
@@ -32,8 +37,13 @@ const PaymentPage = () => {
             paymentData.orderId
           );
 
+          // console.log(result);
+          if (!result || !result.data) {
+            console.warn("Invalid API response:", result);
+          }
 
-          const paymentData = {
+          // Update payment data with the result
+          setLocalPaymentData({
             status: result.data.status,
             orderId: result.data.orderId,
             identifire: result.data.identifire,
@@ -43,11 +53,11 @@ const PaymentPage = () => {
             payeeVpa: result.data.payeeVpa,
             date: result.data.date,
             time: result.data.time,
-            remark: result.data.remark
-          };
-
-
-          setCheckTxnData(result.data);  // Update state with the transaction result
+            remark: result.data.remark,
+            qrString: result.data.qrString,
+            companyName: result.data.companyName,
+            logo: result.data.logo,
+          });
         }
       } catch (error) {
         console.error("Error fetching transaction status:", error);
@@ -59,26 +69,19 @@ const PaymentPage = () => {
       fetchPaymentStatus();
     }, 10000);
 
-    // Cleanup intervals on component unmount
     return () => {
       clearInterval(timer);
       clearInterval(statusInterval);
     };
-  }, [paymentData?.orderId]);  // Removed navigate and checkTxnData from dependencies
+    // eslint-disable-next-line
+  }, [paymentData.orderId]);
 
-  // Use a separate useEffect to log the checkTxnData whenever it changes
-  useEffect(() => {
-    if (checkTxnData) {
-      console.table(checkTxnData);  // Log the updated checkTxnData
-    }
-  }, [checkTxnData]);
-
-  // Use a separate useEffect to navigate after setting state
   useEffect(() => {
     if (timeLeft === 0) {
-      // navigate("/home", { state: { checkTxnData } });
+      navigate("/home", { state: { localPaymentData } });
     }
-  }, [timeLeft, checkTxnData, navigate]);  // Trigger navigation once state is updated and timeLeft reaches 0
+    // eslint-disable-next-line
+  }, [timeLeft, paymentData, navigate]);
 
   const formatTime = (seconds) => {
     const minutes = Math.floor(seconds / 60);
@@ -123,7 +126,7 @@ const PaymentPage = () => {
             </p>
           </div>
           <QRCode
-            value={paymentData.qrString}
+            value={paymentData.qrString || ""}
             size={240}
             style={{ margin: "20px auto" }}
           />
